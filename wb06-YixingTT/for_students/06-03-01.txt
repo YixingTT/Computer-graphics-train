@@ -1,0 +1,42 @@
+Please indicate the features you have implemented here by putting an "x" (i.e. "[x]") and a brief explanation of what the graders need to do to see it:
+
+# Basic features:
+[x] Simple cardinal spline track: Click the simple-track checkbox.
+[x] Train goes around the track: Move the slider or click the checkbox in front of the slider.
+[x] Interface still works: Move the points and add and delete points.
+[x] Train has a front: There is light in the front and it points to the direction which train is going.
+[x] Train points in the right direction: Watch the trace of train.
+[x] Track that shows off arc length: Train speed up and slow down when arc-length checkbox is unchecked
+[x] Edit the text file to explain features: Read the explaination in the box.
+
+# Bonus features:
+[x] Arc-length parameterization: Click the arc-length checkbox and the train goes at a constant speed.
+[x] Rail ties perpendicular: Uncheck the simple-track checkbox and see the rail.
+[x] Rail ties correctly spaced: Uncheck the simple-track checkbox and see the rail.
+[x] Parallel rails: Uncheck the simple-track checkbox and see the rail.
+[x] Multiple cars: Click the multiple-car checkbox
+[ ] Trucked wheels:
+[ ] Slider to control tension:
+[ ] Switchable B-Splines:
+[x] Smoke: click the smoke checkbox.
+[x] Scenery: The green background and trees in the bottom.
+[ ] Scenery adapts to track:
+
+Artistic merit points are at the discretion of the grader.
+
+Note: please refer to the workbook instructions and rubrics for the detailed requirements.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+    
+<!-- CS559 Workbook Pages - page content &copy; 2021, Michael Gleicher -->
+<!-- This page is part of a Workbook developed for the 
+    CS559 Computer Graphics Class at the University of Wisconsin
+    https://graphics.cs.wisc.edu/Courses/559-sp2021/ -->
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="../../css/workbook.css">
+        <script src="../../js/resizeIFrames.js"></script>    
+    
+    
+    <script type="text">
+        (function() {
+            var i, text, code, codes = document.getElementsByTagName('code');
+            for (i = 0; i &lt; codes.length;) {
+                code = codes[i];
+                if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+                text = code.textContent;
+                if (/^\$[^$]/.test(text) && /[^$]\$$/.test(text)) {
+                    text = text.replace(/^\$/, '\\(').replace(/\$$/, '\\)');
+                    code.textContent = text;
+                }
+                if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+                    /^\$(.|\s)+\$$/.test(text) ||
+                    /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+                    code.outerHTML = code.innerHTML;  // remove <code></code>
+                    continue;
+                }
+                }
+                i++;
+            }
+            })();
+    </script>
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            displayMath: [['$$','$$'], ['\\[','\\]']],
+            processEscapes: true,
+            processEnvironments: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+            TeX: { equationNumbers: { autoNumber: "AMS" },
+                    extensions: ["AMSmath.js", "AMSsymbols.js"] }
+            }
+        });
+    </script>
+
+    </head>
+    <body>
+        <div class="container container--outer"><div class="maincolumn">
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header"><h1 class="post__title">Page 1: A curve review</h1>
+		</header>
+        
+        
+        
+		<div class="content post__content clearfix">
+            <p>Workbook 5 and the lectures introduced the key ideas of curves. On this page, we&rsquo;re going to review some of the main ideas, and will have a little bit of practice to help make sure you understand the concepts for use on the train.</p>
+<h2 id="outline-of-curve-topics">Outline of Curve Topics</h2>
+<p>The main points in the workbooks / lectures about curves:</p>
+<ol>
+<li>The idea of <strong>curves</strong>, and their basic definitions.</li>
+<li>The idea of <strong>parametric representations</strong> - where we describe curves as a function of a free parameter.</li>
+<li>The idea of <strong>tangents</strong> and, more generally, the derivatives of curves.</li>
+<li>The idea of <strong>continuity</strong>, where we talk about how curve pieces connect to make bigger curves.</li>
+<li>The idea of <strong>splines</strong> or piecewise polynomial representations, which are the most common way we represent curves in computer graphics.</li>
+<li>The idea of using <strong>cubic</strong> polynomials for the curve pieces, which is the most common thing we do in computer graphics.</li>
+<li>The idea of using <strong>Hermite</strong> interpolation to give easy control over cubics by specifying the beginning and end of each segment.</li>
+<li>The idea of using <strong>cardinal</strong> interpolation to give easy control over Hermite interpolation by computing the derivatives from the point positions. <strong>Catmull-Rom</strong> splines are an important special case.</li>
+<li>The reasons why we prefer to do <strong>interpolation</strong> by using a piecewise polynomial (like a cardinal spline), rather than fewer higher-order pieces. (this was emphasized more in the book and lecture)</li>
+<li>The reasons why we often prefer <strong>approximating</strong> curves to interpolation, to give us better control of a curve shape.</li>
+<li>The nice properties of <strong>Bézier</strong> curves that make them a very popular choice in graphics applications.</li>
+<li>The geometric derivation of Bézier with the <strong>DeCastlejau</strong> construction which provides us with intuitions for how the curves work, but also practical algorithms.</li>
+<li>The specific form of <strong>Bézier Cubics</strong>, which resemble Hermit cubics and are very common in graphics applications.</li>
+<li>The <strong>Basis Functions</strong> of Bézier curves, which provide a way to evaluate the curves and a sense of the mathematical elegance.</li>
+<li>How Bézier curves are applied in the <strong>APIs</strong> we use.</li>
+<li>The idea of <strong>arc length parameterizations</strong> of curves, where the length of the curve is used for parameterization, allowing for the parameter to have a more direct connection to location.</li>
+</ol>
+<p>These are all important, and it&rsquo;s a lot, so some practice may be worthwhile.</p>
+<h2 id="drawing-cardinal-splines">Drawing Cardinal Splines</h2>
+<p>Cardinal splines are very useful, but they are not built into the Web APIs. This isn&rsquo;t a problem because it is easy to convert Cardinal segments to Bézier segments, and APIs can draw Béziers well.</p>
+<p>To practice that, here is a Cardinal Spline to draw. In this figure there are 5 points to connect with a Cardinal spline - we&rsquo;ve drawn line segments between the points rather than Cardinals. Replace the line segments with Cardinal splines, so that the picture is $C(1)$. Use Catmull-Rom splines (cardinals with <code>t=0</code>, or <code>s=0.5</code>).</p>
+<p>There are two catches here:</p>
+<ol>
+<li>Canvas doesn&rsquo;t have Cardinal Splines - you must convert each Cardinal segment to a Bezier segment. You need to replace each of the <code>lineTo</code> commands in <a href="../../for_students/06-01-01.js" class="for_students">06-01-01.js</a> with a <code>bezierCurveTo</code> command, and compute the positions of the control points.</li>
+<li>The spline is &ldquo;looped&rdquo; - the last point connects to the first. This means when you need to get the &ldquo;next&rdquo; point after the last point, you go around the loop.</li>
+</ol>
+<iframe
+    title="06-01-01"
+    src="../../for_students/06-01-01.html"
+    class="includebox includebox-standard"
+    width="100%"
+    height="100%"
+    scrolling="no"
+    frameborder="0"
+></iframe>
+<p>Edit <a href="../../for_students/06-01-01.js" class="for_students">06-01-01.js</a> to do this exercise - you shouldn&rsquo;t need to change <a href="../../for_students/06-01-01.html" class="for_students">06-01-01.html</a>.</p>
+<p>Observe how the the cardinal spline does not fit within the original &ldquo;control polygon&rdquo;. You will have Bézier control points outside of the original cardinal control polygon - since the Bézier curve does stay inside of its control polygon.</p>
+<h2 id="beacutezier-curve-algorithms">Bézier Curve Algorithms</h2>
+<p>We discussed both algebraic ways to compute Bézier curves (the blending function polynomials), and geometric approaches.</p>
+<p>Using the blending functions may be easier/faster for computing values in a program. I find it easier to use DeCastlejau when I have to compute things by hand. The DeCastlejau algorithm is useful when we need to split curves, and it has the advantage that it provides us with the tangents as part of the computation process.</p>
+<p>To practice with using the DeCastlejau algorithm, take the curve in this figure <a href="../../for_students/06-01-02.svg" class="for_students">06-01-02.svg</a> and split it into three parts with even parameter amounts (e.g., <code>u=1/3</code> and <code>2/3</code>). Take the one curve in the picture, and replace it with 3 curves that are different colors (make the first one red, the second one green, and the third blue) - that are geometrically the same curve. We need to make separate curves because in SVG we haven&rsquo;t learned to make a single curve that is three colors. (even if you know how to do that, don&rsquo;t - we will check that your result has 3 separate <code>path</code> statements).</p>
+<figure class="">
+        <a href="../../for_students/06-01-02.svg">
+            <img src="../../for_students/06-01-02.svg" alt="for_students/06-01-02.svg" />
+        </a>
+    </figure>
+
+
+<p>Round numbers to integers (when you do the computations, you will get 1/3rds).</p>
+<h2 id="arc-length-parameterizations">Arc-Length Parameterizations</h2>
+<p>Arc length parameterizations are a tricky concept.</p>
+<p>Consider what &ldquo;arc length&rdquo; is (before we get to parameterization): it is the length along the curve. Imagine if you wrap a tape measure along the curve to measure how &ldquo;long it is&rdquo;; or you straighten out the curve to measure how long it is.</p>
+<p>Given the idea of arc-length, you can think about its connection to parameterizations. Normally, we think about the length of the whole curve. But, given a curve $\mathbf{f}(u)$, we could consider the &ldquo;first part of the curve starting at 0 and going to $u$&rdquo;, and create a new function $a(u)$ which is the arc length of that curve. Every parameter value $u$ corresponds to some distance $a(u)$.</p>
+<p>Arc length parameterization reverses this process: we use the distance along the curve as the parameter. We specify the distance $s$ (the arc length parameter), and compute the &ldquo;regular parameter&rdquo; from this using the inverse of the $a$ function above, $u=a^{-1}(s).$ Because this function changes from one parameterization to another, we call it a <em>reparameterization</em>. You could imagine a new &ldquo;curve function&rdquo; $\mathbf{f_s}(s)=\mathbf{f}(a^{-1}(u))$ that is an <em>arc length parameterization</em> of the original $\mathbf{f}$ - it&rsquo;s the same curve, except with an arc length parameter.</p>
+<p>You should notice that doing arc length parameterization (or reparameterization) requires not just finding the arc length function $a(u)$, but its inverse. Computing the arc length is hard enough - it requires solving an integral to compute the length, which usually cannot be done analytically. In practice, we usually estimate $a(u)$ using numerical techniques, and estimate it&rsquo;s inverse using numerical techniques.</p>
+<h3 id="why-use-arc-length-parameterization">Why use arc length parameterization?</h3>
+<p>It may be best to think in terms of the &ldquo;pen&rdquo; as a moving object. With a regular parameterization, the curve may speed up and slow down. With an arc-length parameterization, the &ldquo;speed&rdquo; (the magnitude of the velocity) is constant.</p>
+<p>Consider a simple example: a cubic <code>$\mathbf{f}(u)=[u,u^2]$</code>. The 1st derivative of this curve (tangent, or velocity if we think about the curve as the pen moving along the curve) is $\mathbf{f'}(u)=[1,2u]$. At the beginning of the curve the velocity is [1,0], at the end it is [1,1]. The pen &ldquo;sped up&rdquo; as it moves along the curve.</p>
+<p>Another way to think about it: if we take uniform steps in $u$, the steps we take in the world will be differently sized. Here&rsquo;s a simple example, taking 10 steps along $u$ (0, .1, etc) and drawing this curve. (see <a href="../../for_students/06-01-03.html" class="for_students">06-01-03.html</a> and <a href="../../for_students/06-01-03.js" class="for_students">06-01-03.js</a>). Notice how the steps towards the end are longer than the steps at the beginning.</p>
+<iframe
+    title="06-01-03"
+    src="../../for_students/06-01-03.html"
+    class="includebox includebox-standard"
+    width="100%"
+    height="100%"
+    scrolling="no"
+    frameborder="0"
+></iframe>
+<p>An arc length parameterization would trace the same curve, but with even steps. The way to think about it is a way to change parameters - we make $s$ (the arc length parameter) move in even steps, and compute the corresponding $u$ values. We just need to come up with a reparameterization function $u=g(s)$ that does this. We can think of $s$ as being distance along the curve (hence the name arc-length parameterization).</p>
+<p>In general, these functions are hard to derive analytically - we need to use numerical approximations. Even for this really simple parabola, the arc-length is a complicated function. In Workbook 5, we looked at how to compute a table of approximate arclengths to approximate $s$ (distance along the curve) from $u$. Given the table, we can use lookups and interpolation to find the inverse.</p>
+<h2 id="on-to-the-train">On to the Train!</h2>
+<p><a href="../../docs/2/" class="Next__Page">Next: The Train: Intro </a></p>
+
+            
+
+
+        
+        <div class="page-rubric-container">
+    <details class="page__rubric">
+    <summary>Page 1 Rubric (20 points total)</summary>
+    <br/>
+    <div class="page-rubric-grid">
+            <div class="page-rubric-grid-header rubric-box-regular">Points (20):</div><div class="page-rubric-grid-box rubric-box-regular">Box 06-01-01</div>
+                <div class="page-rubric-grid-points rubric-box-regular">10 pt</div>
+                <div class="page-rubric-grid-desc rubric-box-regular">Make a cardinal spline through the points</div><div class="page-rubric-grid-box rubric-box-regular">Box 06-01-02</div>
+                <div class="page-rubric-grid-points rubric-box-regular">10 pt</div>
+                <div class="page-rubric-grid-desc rubric-box-regular">Split the Bezier</div></div>
+    </details>
+    </div>
+			
+			
+		</div>
+	</article>
+</main>
+
+                </div>
+                <div class="sidebar">
+<h2 class="Side_Title">Workbook 6: The Train (More Curves)</h2>
+<p class="Side__Note">Pages:</p>
+<ul class="Side__List">
+    <li class="Side__Item Side__Unselected"><a href="../../">Index (CS559 Workbook 6: The Train)</a></li>
+        <li class="Side__Item Side__Selected"> 1: A curve review </li>
+        <li class="Side__Item Side__Unselected"> <a href="../../docs/2/">2: The Train: Intro </a></li>
+        <li class="Side__Item Side__Unselected"> <a href="../../docs/3/">3: The Train: Assignment </a></li>
+</ul>
+</div>
+</div>
+    </body>
+</html>

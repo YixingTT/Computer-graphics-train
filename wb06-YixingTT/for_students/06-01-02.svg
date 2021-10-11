@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200px" height="200px">
+    <path stroke="red" fill ="none" stroke-width="5" d="M0,100 C 16.67,66.67 33.33,61.11 50,62.96"/>
+    <path stroke="green" fill ="none" stroke-width="5" d="M50,62.96 C 61.11,64.20 62.5,65.625 75,68.75" />
+    <path stroke="blue" fill ="none" stroke-width="5" d="M75,68.75 C 100,75 125,75 150,0" />
+</svg>
